@@ -58,7 +58,7 @@ if [ -n "${clst_update_seed}" ]; then
 	if [ "${clst_update_seed}" == "yes" ]; then
 		echo "Updating seed stage..."
 		if [ -n "${clst_update_seed_command}" ]; then
-			ROOT=/ run_merge --buildpkg=n "${clst_update_seed_command}"
+			ROOT=/ run_merge --buildpkg=y "${clst_update_seed_command}"
 		else
 			ROOT=/ run_merge --buildpkg=n --update --deep --newuse @world
 		fi
@@ -130,11 +130,14 @@ fi
 # not run locale-gen when ROOT is set. Since we've set LANG, we need to run
 # locale-gen explicitly.
 if [ -x "$(command -v locale-gen)" ]; then
+	cp /usr/bin/localedef "$ROOT"/usr/bin/localedef
 	if ! locale-gen -V | grep -q '^locale-gen-2\.'; then
 		locale-gen --config /etc/locale.gen --prefix "$ROOT"/
 	else
 		locale-gen --destdir "$ROOT"/
 	fi || die "locale-gen failed"
+	# locale-gen --destdir "$ROOT"/ || die "locale-gen failed"
+	rm "$ROOT"/usr/bin/localedef
 fi
 
 # Why are we removing these? Don't we need them for final make.conf?

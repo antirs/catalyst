@@ -8,8 +8,8 @@ source /tmp/chroot-functions.sh
 update_env_settings
 show_debug
 
-setup_gcc
-setup_binutils
+#setup_gcc
+#setup_binutils
 
 # Stage1 is not going to have anything in zoneinfo, so save our Factory timezone
 if [ -d "${ROOT}/usr/share/zoneinfo" ]
