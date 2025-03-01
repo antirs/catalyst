@@ -24,6 +24,7 @@ valid_config_file_values = frozenset([
     "repo_name",
     "repos_storedir",
     "sharedir",
+    "shdir",
     "storedir",
     "target_distdir",
     "target_logdir",
