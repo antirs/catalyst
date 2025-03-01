@@ -60,7 +60,7 @@ mkdir -p "$ROOT"
 ## START BUILD
 # First, we drop in a known-good baselayout
 [ -e ${clst_make_conf} ] && echo "USE=\"${USE} build\"" >> ${clst_make_conf}
-run_merge --oneshot --nodeps sys-apps/baselayout
+run_merge --oneshot --nodeps --getbinpkg n sys-apps/baselayout
 sed -i "/USE=\"${USE} build\"/d" ${clst_make_conf}
 
 echo "$locales" > /etc/locale.gen
