@@ -56,13 +56,13 @@ setup_features() {
 	export FEATURES="${features[@]}"
 	if [ -n "${clst_CCACHE}" ]
 	then
-		features+=(ccache)
+		# features+=(ccache)
 		ROOT=/ run_merge --oneshot --noreplace dev-util/ccache
 	fi
 
 	if [ -n "${clst_DISTCC}" ]
 	then
-		features+=(distcc)
+		# features+=(distcc)
 		export DISTCC_HOSTS="${clst_distcc_hosts}"
 		[ -e ${clst_make_conf} ] && \
 			echo 'USE="${USE} -avahi -gtk -gnome"' >> ${clst_make_conf}
