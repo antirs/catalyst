@@ -81,7 +81,15 @@ if [ -e ${clst_make_conf} ]; then
 	done
 fi
 
-run_merge --implicit-system-deps=n --oneshot "${buildpkgs[@]}"
+# Preliminary support for static builds
+if [[ -n "${EN_CATALYST_SYSROOT}" ]] &&
+	   [[ "${EN_CATALYST_SYSROOT}" != "/" ]]; then
+	mkdir -p "${EN_CATALYST_SYSROOT}"/etc
+	ln -s /etc/portage "${EN_CATALYST_SYSROOT}"/etc/portage
+	SYSROOT="${EN_CATALYST_SYSROOT}" run_merge --implicit-system-deps=n --oneshot "${buildpkgs[@]}"
+else
+	run_merge --implicit-system-deps=n --oneshot "${buildpkgs[@]}"
+fi
 
 # TODO: Drop this when locale-gen in stable glibc supports ROOT.
 #
