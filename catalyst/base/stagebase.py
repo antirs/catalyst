@@ -985,6 +985,7 @@ class StageBase(TargetBase, ClearBase, GenBase):
     def process_repos(self):
         """ Create repos.conf entry for every repo """
 
+        priority = 1
         for _, name, default in self.repos:
             location = self.get_repo_location(name)
 
@@ -1000,8 +1001,9 @@ class StageBase(TargetBase, ClearBase, GenBase):
             if default is not None:
                 config['DEFAULT'] = {'main-repo': name}
 
-            config[name] = {'location': location}
+            config[name] = {'location': location, 'priority': priority}
             self.write_repo_conf(name, config)
+            priority = priority + 1
 
     def root_overlay(self):
         """ Copy over the root_overlay """
