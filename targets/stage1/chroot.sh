@@ -31,6 +31,21 @@ sed -i -e 's:BINPKG_COMPRESS="bzip2":BINPKG_COMPRESS="zstd":' \
 # if BINDIST is set to avoid issues with openssl / openssh
 [ -e ${clst_make_conf} ] && echo "USE=\"${BINDIST} ${USE}\"" >> ${clst_make_conf}
 
+# Preliminary support for BROOT update
+if [[ "${EN_CATALYST_UPDATE_BROOT}" == "yes" ]] &&
+	   [[ -n "${EN_CATALYST_BROOT}" ]] &&
+	   [[ -n "${EN_CATALYST_PROFILE_BROOT}" ]]; then
+	echo Update BROOT "(${EN_CATALYST_PROFILE_BROOT})": \
+		 ROOT=/ PORTAGE_CONFIGROOT="${EN_CATALYST_BROOT}" emerge...
+	ensure_broot "${EN_CATALYST_BROOT}" "${EN_CATALYST_PROFILE_BROOT}"
+	while read en_clst_update_broot_command; do
+		if [[ -n "${en_clst_update_broot_command}" ]]; then
+			PORTAGE_CONFIGROOT="${EN_CATALYST_BROOT}" \
+				ROOT=/ run_merge ${en_clst_update_broot_command}
+		fi
+	done < <(echo "${EN_CATALYST_UPDATE_BROOT_COMMANDS}")
+fi
+
 # Update stage3
 if [ -n "${clst_update_seed}" ]; then
 	if [ "${clst_update_seed}" == "yes" ]; then

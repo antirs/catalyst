@@ -70,11 +70,18 @@ setup_features() {
 		# have some way to check if we need to reinstall distcc without being
 		# able to rely on USE, so we check for the distcc user and force a
 		# reinstall if it isn't found.
+		local portage_configroot=/
+		if [[ -n "${EN_CATALYST_BROOT}" ]] && \
+			   [[ -n "${EN_CATALYST_PROFILE_BROOT}" ]]
+		then
+			ensure_broot "${EN_CATALYST_BROOT}" "${EN_CATALYST_PROFILE_BROOT}"
+			portage_configroot="${EN_CATALYST_BROOT}"
+		fi
 		if [ "$(getent passwd distcc | cut -d: -f1)" != "distcc" ]
 		then
-			ROOT=/ run_merge --oneshot sys-devel/distcc
+			PORTAGE_CONFIGROOT="${portage_configroot}" ROOT=/ run_merge --oneshot sys-devel/distcc
 		else
-			ROOT=/ run_merge --oneshot --noreplace sys-devel/distcc
+			PORTAGE_CONFIGROOT="${portage_configroot}" ROOT=/ run_merge --oneshot --noreplace sys-devel/distcc
 		fi
 		sed -i '/USE="${USE} -avahi -gtk -gnome"/d' ${clst_make_conf}
 		mkdir -p /etc/distcc
@@ -281,6 +288,15 @@ show_debug() {
 		echo "PROFILE_ARCH:          $(portageq envvar PROFILE_ARCH)"
 		echo
 	fi
+}
+
+ensure_broot() {
+	local en_catalyst_broot="$1"
+	local en_catalyst_profile_broot="$2"
+	mkdir -p "${en_catalyst_broot}"/etc
+	cp -ap /etc/portage "${en_catalyst_broot}"/etc
+	ROOT=/ PORTAGE_CONFIGROOT="${en_catalyst_broot}" \
+					  eselect profile set "${en_catalyst_profile_broot}"
 }
 
 readonly locales="
