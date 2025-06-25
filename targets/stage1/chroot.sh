@@ -96,11 +96,22 @@ if [ -e ${clst_make_conf} ]; then
 	done
 fi
 
-# Preliminary support for static builds
+# Preliminary support for SYSROOT builds
 if [[ -n "${EN_CATALYST_SYSROOT}" ]] &&
 	   [[ "${EN_CATALYST_SYSROOT}" != "/" ]]; then
 	mkdir -p "${EN_CATALYST_SYSROOT}"/etc
 	ln -s /etc/portage "${EN_CATALYST_SYSROOT}"/etc/portage
+
+	# Preliminary support for SYSROOT update
+	if [[ "${EN_CATALYST_UPDATE_SYSROOT}" == "yes" ]]; then
+		echo Update SYSROOT: ROOT="${EN_CATALYST_SYSROOT}" emerge...
+		while read en_clst_update_sysroot_command; do
+			if [[ -n "${en_clst_update_sysroot_command}" ]]; then
+				ROOT="${EN_CATALYST_SYSROOT}" run_merge ${en_clst_update_sysroot_command}
+			fi
+		done < <(echo "${EN_CATALYST_UPDATE_SYSROOT_COMMANDS}")
+	fi
+
 	SYSROOT="${EN_CATALYST_SYSROOT}" run_merge --implicit-system-deps=n --oneshot "${buildpkgs[@]}"
 else
 	run_merge --implicit-system-deps=n --oneshot "${buildpkgs[@]}"
