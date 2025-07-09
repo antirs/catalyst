@@ -299,6 +299,16 @@ ensure_broot() {
 					  eselect profile set "${en_catalyst_profile_broot}"
 }
 
+ensure_tmpdirs() {
+	local root="$1"
+	local en_catalyst_tmpdirs="$2"
+	while read en_catalyst_tmpdir; do
+		if [[ -n "${en_catalyst_tmpdir}" ]]; then
+			mkdir -p "${root}"/"${en_catalyst_tmpdir}"
+		fi
+	done < <(echo "${en_catalyst_tmpdirs}")
+}
+
 readonly locales="
 C.UTF-8 UTF-8
 "

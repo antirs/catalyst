@@ -31,6 +31,12 @@ sed -i -e 's:BINPKG_COMPRESS="bzip2":BINPKG_COMPRESS="zstd":' \
 # if BINDIST is set to avoid issues with openssl / openssh
 [ -e ${clst_make_conf} ] && echo "USE=\"${BINDIST} ${USE}\"" >> ${clst_make_conf}
 
+# Ensure temporary directories exist
+if [[ -n "${EN_CATALYST_TMPDIRS}" ]]; then
+	echo Creating TMPDIRs...
+	ensure_tmpdirs "/" "${EN_CATALYST_TMPDIRS}"
+fi
+
 # Preliminary support for BROOT update
 if [[ "${EN_CATALYST_UPDATE_BROOT}" == "yes" ]] &&
 	   [[ -n "${EN_CATALYST_BROOT}" ]] &&
