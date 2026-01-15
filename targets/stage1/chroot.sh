@@ -36,6 +36,7 @@ if [[ -n "${EN_CATALYST_TMPDIRS}" ]]; then
 	echo Creating TMPDIRs...
 	ensure_tmpdirs "/" "${EN_CATALYST_TMPDIRS}"
 fi
+ensure_tmpdirs "/" "/var/tmp/notmpfs"
 
 # Preliminary support for BROOT update
 if [[ "${EN_CATALYST_UPDATE_BROOT}" == "yes" ]] &&
